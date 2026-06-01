@@ -89,6 +89,9 @@ public:
 	UFUNCTION(BlueprintCallable, Category="Input")
 	virtual void DoJumpEnd();
 
+	UPROPERTY(BlueprintReadOnly, Category="Stats")
+	bool isAlive = true;
+
 public:
 
 	/** Returns CameraBoom subobject **/
