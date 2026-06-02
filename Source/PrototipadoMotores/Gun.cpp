@@ -11,6 +11,43 @@ AGun::AGun()
 
 }
 
+void AGun::PullTrigger()
+{
+	UGameplayStatics::PlaySoundAtLocation(GetWorld(), shootSound, GetActorLocation());
+	
+	if (ownerController)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Disparo"));
+		FVector viewPointLocation;
+		FRotator viewPointRotation;
+		ownerController->GetPlayerViewPoint(viewPointLocation, viewPointRotation);
+		//Debug de camara
+		//DrawDebugCamera(GetWorld(), viewPointLocation, viewPointRotation, 90, 2, FColor::Red, true);
+
+		//Raycast
+		FVector endPoint = viewPointLocation + (viewPointRotation.Vector() * maxRange);
+
+		FHitResult hit;
+		FCollisionQueryParams params;
+		params.AddIgnoredActor(GetOwner());
+		params.AddIgnoredActor(this);
+
+		bool isHit = GetWorld()->LineTraceSingleByChannel(hit, viewPointLocation, endPoint, ECC_GameTraceChannel2, params);
+
+		if (isHit)
+		{
+			//UNiagaraFunctionLibrary::SpawnSystemAtLocation(GetWorld(), impactParticle, hit.ImpactPoint, hit.ImpactPoint.Rotation());
+			DrawDebugSphere(GetWorld(), hit.ImpactPoint, 5, 8, FColor::Yellow, true);
+
+			AActor* hitActor = hit.GetActor();
+			if (hitActor)
+			{
+				UGameplayStatics::ApplyDamage(hitActor, bulletDamage, ownerController, this, UDamageType::StaticClass());
+			}
+		}
+	}
+}
+
 // Called when the game starts or when spawned
 void AGun::BeginPlay()
 {
