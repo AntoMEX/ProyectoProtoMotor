@@ -50,6 +50,24 @@ APrototipadoMotoresCharacter::APrototipadoMotoresCharacter()
 	// are set in the derived blueprint asset named ThirdPersonCharacter (to avoid direct content references in C++)
 }
 
+void APrototipadoMotoresCharacter::BeginPlay()
+{
+	Super::BeginPlay();
+
+	GetMesh()->HideBoneByName("weapon_r", EPhysBodyOp::PBO_None);
+
+	if (gunClass) 
+	{
+		currentGun = GetWorld()->SpawnActor<AGun>(gunClass);
+		if (currentGun)
+		{
+			currentGun->SetOwner(this);
+			currentGun->AttachToComponent(GetMesh(), FAttachmentTransformRules::KeepRelativeTransform, TEXT("weaponSocket"));
+			currentGun->ownerController = GetController();
+		}
+	}
+}
+
 void APrototipadoMotoresCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
 	// Set up action bindings
@@ -65,6 +83,9 @@ void APrototipadoMotoresCharacter::SetupPlayerInputComponent(UInputComponent* Pl
 
 		// Looking
 		EnhancedInputComponent->BindAction(LookAction, ETriggerEvent::Triggered, this, &APrototipadoMotoresCharacter::Look);
+
+		//Shooting
+		EnhancedInputComponent->BindAction(ShootAction, ETriggerEvent::Started, this, &APrototipadoMotoresCharacter::Shoot);
 	}
 	else
 	{
@@ -130,4 +151,17 @@ void APrototipadoMotoresCharacter::DoJumpEnd()
 {
 	// signal the character to stop jumping
 	StopJumping();
+}
+
+void APrototipadoMotoresCharacter::Shoot()
+{
+	if (!isAlive || !currentGun)
+	{
+		return;
+	}
+
+	UE_LOG(LogTemp, Display, TEXT("PullingTrigger"));
+	currentGun->SetOwner(this);
+	currentGun->ownerController = GetController();
+	currentGun->PullTrigger();
 }

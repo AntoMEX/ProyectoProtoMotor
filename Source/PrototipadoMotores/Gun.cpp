@@ -9,6 +9,15 @@ AGun::AGun()
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
+	rootComp = CreateDefaultSubobject<USceneComponent>(TEXT("Scene Root"));
+	SetRootComponent(rootComp);
+
+	skeletalMeshComp = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("Mesh"));
+	skeletalMeshComp->SetupAttachment(rootComp);
+
+	flashParticle = CreateDefaultSubobject<UNiagaraComponent>(TEXT("FlashParticle"));
+	flashParticle->SetupAttachment(rootComp);
+
 }
 
 void AGun::PullTrigger()
@@ -32,7 +41,8 @@ void AGun::PullTrigger()
 		params.AddIgnoredActor(GetOwner());
 		params.AddIgnoredActor(this);
 
-		bool isHit = GetWorld()->LineTraceSingleByChannel(hit, viewPointLocation, endPoint, ECC_GameTraceChannel2, params);
+		bool isHit = GetWorld()->LineTraceSingleByChannel(hit, viewPointLocation, endPoint, ECC_Visibility, params);
+		DrawDebugLine(GetWorld(), viewPointLocation, endPoint, FColor::Green, false, 3);// 3 = debug time 
 
 		if (isHit)
 		{

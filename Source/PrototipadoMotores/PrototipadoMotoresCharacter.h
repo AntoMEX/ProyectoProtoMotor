@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
+#include "Gun.h"
 #include "Logging/LogMacros.h"
 #include "PrototipadoMotoresCharacter.generated.h"
 
@@ -61,7 +62,7 @@ protected:
 
 	/** Initialize input action bindings */
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
-	//virtual void BeginPlay() override;
+	virtual void BeginPlay() override;
 
 protected:
 
@@ -89,7 +90,22 @@ public:
 	UFUNCTION(BlueprintCallable, Category="Input")
 	virtual void DoJumpEnd();
 
-	UPROPERTY(BlueprintReadOnly, Category="Stats")
+	UFUNCTION(BlueprintCallable, Category = "Combat")
+	void Shoot();
+
+	UPROPERTY(EditAnywhere, Category = "Combat")
+	TSubclassOf<AGun> gunClass;
+
+	UPROPERTY(VisibleAnywhere, Category = "Combat")
+	AGun* currentGun;
+
+	/*UPROPERTY(EditAnywhere, Category = "Stats")
+	float maxHealth = 100.0f;
+
+	UPROPERTY(BlueprintReadOnly, Category = "Stats")
+	float health;*/
+
+	UPROPERTY(BlueprintReadOnly, VisibleAnywhere, Category="Stats")
 	bool isAlive = true;
 
 public:
