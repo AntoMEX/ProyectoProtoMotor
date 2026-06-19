@@ -4,6 +4,8 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/GameModeBase.h"
+#include "PrototipadoMotoresCharacter.h"
+#include "EnemyAI.h"
 #include "PrototipadoMotoresGameMode.generated.h"
 
 /**
@@ -18,6 +20,13 @@ public:
 	
 	/** Constructor */
 	APrototipadoMotoresGameMode();
+
+protected:
+	virtual void BeginPlay() override;
+
+	APrototipadoMotoresCharacter* player;
+
+	TArray<AActor*> enemyArray;
 };
 
 
