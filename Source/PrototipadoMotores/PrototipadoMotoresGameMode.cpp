@@ -27,10 +27,16 @@ void APrototipadoMotoresGameMode::BeginPlay()
 
 			if (!enemy) 
 			{
-				return;
+				continue;
 			}
 
-			Cast<AEnemyAI>(temp)->StartbehaviorTree(enemy);
+			AEnemyAI* enemyController = Cast<AEnemyAI>(enemy->GetController());
+
+			if (enemyController) 
+			{
+				enemyController->StartbehaviorTree(enemy);
+			}
+			
 		}
 	}
 }

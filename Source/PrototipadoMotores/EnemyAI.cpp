@@ -20,7 +20,7 @@ void AEnemyAI::StartbehaviorTree(AEnemyCharacter* character)
 	if (enemyTree)
 	{
 		myCharacter = Cast<AEnemyCharacter>(GetPawn());
-		PlayerPawn = getPlayerCharacter();
+		PlayerPawn = Cast<APrototipadoMotoresCharacter>(UGameplayStatics::GetPlayerPawn(GetWorld(), 0));
 
 		RunBehaviorTree(enemyTree);
 		if (myCharacter || PlayerPawn) 
